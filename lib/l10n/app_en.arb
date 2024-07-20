@@ -1,0 +1,52 @@
+{
+    "appName": "App Name",
+    "switchTheme": "Switch theme",
+    "changeLanguage": "Change language",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "login": "Login",
+    "welcomeAgain": "Welcome again",
+    "username": "Username",
+    "typeYourUsenameHere": "Type your username here",
+    "validationEmail": "Please enter a valid email",
+    "validationMaxLength": "Please complete the required length",
+    "validationRequired": "This field is required",
+    "validationUrl": "Please enter a valid URL",
+    "validationPhoneNumber": "Please enter a valid phone number",
+    "invalidFieldValue": "Invalid field value",
+    "typeYourPasswordHere": "Type your password here",
+    "password": "Password",
+    "fieldRequired": "This field is required",
+    "welcomeAgain": "Welcome again",
+    "loginSuccess": "Logged in successfully",
+    "validatorMinLength": "The field must be at least {n} characters long",
+    "@validatorMinLength": {
+        "placeholders": {
+        "n": {}
+        }
+    },
+    "validatorMaxLength": "The field must be at most {n} characters long",
+    "@validatorMaxLength": {
+        "placeholders": {
+        "n": {}
+        }
+    },
+    "validatorEmail": "The field is not a valid email address",
+    "validatorPhoneNumber": "The field is not a valid phone number",
+    "validatorRequired": "The field is required",
+    "validatorUrl": "The field is not a valid URL address",
+    "validatorUseArabicOrKurdishLetters": "Please use Arabic or Kurdish letters",
+    "validatorUseEnglishLetters": "Please use English letters",
+    "defaultErrorMessage": "An error occurred, please try again later",
+    "retry": "Retry",
+    "theme": "Theme",
+    "cancel": "Cancel",
+    "crop": "Crop",
+    "noItemsFoundError": "No items found",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "pickDate": "Pick date",
+    "relocate": "Relocate",
+    "locationPermissionIsRequiredToContinue": "Location permission is required to continue",
+    "themeSystem": "System"
+}

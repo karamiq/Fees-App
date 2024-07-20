@@ -68,6 +68,8 @@ dependencies:
   # ffmpeg_kit_flutter: ^6.0.2
 
   path_provider: any
+  camera: ^0.11.0+1
+  permission_handler: ^11.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -104,7 +106,7 @@ flutter:
   assets:
     - assets/svg/
     - assets/images/
-    - assets/fonts/
-    - assets/icons/
-    - assets/lottie/
-    - assets/videos/
+    #- assets/fonts/
+    #- assets/icons/
+    #- assets/lottie/
+    #- assets/videos/

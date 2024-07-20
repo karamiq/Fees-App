@@ -1,0 +1,1 @@
+ /Users/karam/Documents/GitHub/Fees-App/.dart_tool/flutter_build/208f769f3c6485452d613d1ad6d353a6/native_assets.yaml: 

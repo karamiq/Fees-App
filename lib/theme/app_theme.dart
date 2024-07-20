@@ -33,12 +33,12 @@ class AppTheme {
 
   ThemeData buildDarkTheme() {
     currentBrightness.value = Brightness.dark;
-   return  _build(Brightness.dark);
+    return _build(Brightness.dark);
   }
 
   ThemeData buildLightTheme() {
     currentBrightness.value = Brightness.light;
-   return _build(Brightness.light);
+    return _build(Brightness.light);
   }
 
   InputDecorationTheme _buildInputDecorationTheme(Brightness brightness) {
@@ -79,7 +79,8 @@ class AppTheme {
 
   ColorScheme _buildColorScheme(Brightness brightness) {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: const Color.fromARGB(255, 17, 61, 128),
+      //seedColor: const Color.fromARGB(255, 17, 61, 128),
+      seedColor: const Color(0xFF2684FF),
       brightness: brightness,
     );
 
@@ -115,7 +116,7 @@ class AppTheme {
   TextButtonThemeData _buildTextButtonTheme(Brightness brightness) {
     return TextButtonThemeData(
       style: TextButton.styleFrom(
-        padding:padding,
+        padding: padding,
         shape: RoundedRectangleBorder(
           borderRadius: borderRadius,
         ),

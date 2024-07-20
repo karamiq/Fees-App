@@ -1,9 +1,44 @@
+import 'dart:io';
 import 'package:app/common_lib.dart';
-import 'package:app/data/providers/settings_provider.dart';
-import 'package:app/theme/theme_mode.dart';
+import 'package:app/utils/components/custom_svg_style.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatefulHookConsumerWidget {
+class CameraState {
+  final bool isInitialized;
+  final CameraController? cameraController;
+
+  CameraState({required this.isInitialized, this.cameraController});
+}
+
+class CameraNotifier extends StateNotifier<CameraState> {
+  CameraNotifier()
+      : super(CameraState(isInitialized: false, cameraController: null));
+
+  Future<void> initializeCamera() async {
+    try {
+      final cameras = await availableCameras();
+      if (cameras.isEmpty) {
+        throw Exception('No cameras available');
+      }
+      final controller = CameraController(cameras.first, ResolutionPreset.high);
+      await controller.initialize();
+      state = CameraState(isInitialized: true, cameraController: controller);
+    } catch (e) {}
+  }
+
+  void disposeCamera() {
+    state.cameraController?.dispose();
+    state = CameraState(isInitialized: false, cameraController: null);
+  }
+}
+
+final cameraNotifierProvider =
+    StateNotifierProvider<CameraNotifier, CameraState>(
+        (ref) => CameraNotifier());
+
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
@@ -11,43 +46,92 @@ class HomePage extends StatefulHookConsumerWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  void _switchThemeMode() {
-    ref.read(settingsProvider.notifier).toggleThemeMode(context);
+  @override
+  void initState() {
+    super.initState();
+    ref.read(cameraNotifierProvider.notifier).initializeCamera();
   }
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
+    final cameraState = ref.watch(cameraNotifierProvider);
+
+    if (!cameraState.isInitialized) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(context.l10n.appName),
-            Text(
-              settings.themeMode.localize(context),
-              style: Theme.of(context).textTheme.headlineMedium,
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          if (cameraState.cameraController != null)
+            Positioned.fill(
+              child: CameraPreview(cameraState.cameraController!),
             ),
-            TextButton.icon(
-              onPressed: () => Future.sync(() => ref
-                  .read(settingsProvider.notifier)
-                  .setLocale(settings.locale?.languageCode == 'en'
-                      ? const Locale('es')
-                      : const Locale('en'))),
-              icon: const Icon(Icons.language),
-              label: Text(context.l10n.localeName),
-            )
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _switchThemeMode,
-        tooltip: context.l10n.switchTheme,
-        child: Icon(
-          settings.themeMode.isDark ? Icons.light_mode : Icons.dark_mode,
-        ),
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: takePicture,
+              child: Icon(Icons.camera),
+            ),
+          ),
+          Positioned(
+            top: 40,
+            right: 20,
+            child: Container(
+              child: SvgPicture.asset(
+                Assets.assetsSvgProfile,
+                color: Colors.amber,
+              ),
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  Future<void> takePicture() async {
+    try {
+      final cameraController =
+          ref.read(cameraNotifierProvider.notifier).state.cameraController;
+      if (cameraController != null) {
+        final picture = await cameraController.takePicture();
+        final path = picture.path;
+
+        showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(),
+                  Text('Captured Photo'),
+                  const SizedBox(height: 16),
+                  Image.file(File(path)),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Close the modal
+                    },
+                    child: Text('Close'),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      }
+    } catch (e) {
+      print('Error capturing picture: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    ref.read(cameraNotifierProvider.notifier).disposeCamera();
+    super.dispose();
   }
 }
